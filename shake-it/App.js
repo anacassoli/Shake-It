@@ -515,4 +515,488 @@ export default function App() {
 }
 
 // COMPONENTES
+function Botao({ texto, onPress }) {
+  return (
+    <Pressable
+      style={styles.botao}
+      onPress={onPress}
+    >
+      <Text style={styles.textoBotao}>
+        {texto}
+      </Text>
+    </Pressable>
+  );
+}
 
+function Header({ titulo, voltar }) {
+  return (
+    <View style={styles.header}>
+
+      <Pressable onPress={voltar}>
+        <Ionicons
+          name="chevron-back"
+          size={30}
+          color="white"
+        />
+      </Pressable>
+
+      <Text style={styles.headerTitulo}>
+        {titulo}
+      </Text>
+
+      <View style={{ width: 30 }} />
+
+    </View>
+  );
+}
+
+// ESTILOS
+
+
+const styles = StyleSheet.create({
+
+  tela: {
+    flex: 1,
+    backgroundColor: "#fde7f1",
+  },
+
+  // INÍCIO
+
+  bolhaTop: {
+    position: "absolute",
+    width: 260,
+    height: 150,
+    backgroundColor: "#f8c9df",
+    top: -50,
+    left: -50,
+    borderRadius: 100,
+  },
+
+  bolhaTop2: {
+    position: "absolute",
+    width: 190,
+    height: 120,
+    backgroundColor: "#f9d6e7",
+    top: -35,
+    right: -30,
+    borderRadius: 100,
+  },
+
+  bolhaBottom: {
+    position: "absolute",
+    width: 240,
+    height: 120,
+    backgroundColor: "#f8c9df",
+    bottom: -50,
+    left: -60,
+    borderRadius: 100,
+  },
+
+  inicioCentro: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 30,
+  },
+
+  celularInicio: {
+    width: 100,
+    height: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+
+  ondaEsquerda: {
+    position: "absolute",
+    left: -10,
+  },
+
+  ondaDireita: {
+    position: "absolute",
+    right: -10,
+  },
+
+  ondaTexto: {
+    color: "#d91b72",
+    fontSize: 28,
+    fontWeight: "900",
+  },
+
+  logoShake: {
+    color: "#d91b72",
+    fontSize: 56,
+    fontWeight: "900",
+    fontStyle: "italic",
+    lineHeight: 58,
+  },
+
+  logoIt: {
+    color: "#d91b72",
+    fontSize: 55,
+    fontWeight: "900",
+    fontStyle: "italic",
+  },
+
+  fraseLogo: {
+    color: "#df2779",
+    fontSize: 18,
+    fontWeight: "800",
+    marginTop: 12,
+  },
+
+  descricaoInicio: {
+    textAlign: "center",
+    color: "#9f3968",
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 15,
+    marginBottom: 25,
+  },
+
+  // HEADER 
+
+  header: {
+    height: 90,
+    paddingTop: 28,
+    paddingHorizontal: 20,
+    backgroundColor: "#d91b72",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  headerTitulo: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  // OPÇÕES
+
+  lista: {
+    padding: 15,
+    paddingBottom: 120,
+  },
+
+  cardOpcao: {
+    height: 62,
+    backgroundColor: "#fff",
+    borderRadius: 17,
+    marginBottom: 9,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 13,
+  },
+
+  iconeOpcao: {
+    width: 43,
+    height: 43,
+    borderRadius: 23,
+    backgroundColor: "#fde0ed",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 14,
+  },
+
+  emoji: {
+    fontSize: 25,
+  },
+
+  nomeOpcao: {
+    flex: 1,
+    color: "#222",
+    fontSize: 15,
+    fontWeight: "600",
+  },
+
+  botaoInferior: {
+    position: "absolute",
+    bottom: 22,
+    left: 20,
+    right: 20,
+  },
+
+  // BOTÃO 
+
+  botao: {
+    width: "100%",
+    height: 52,
+    backgroundColor: "#df2779",
+    borderRadius: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  textoBotao: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "800",
+  },
+
+  // MODAL
+
+  fundoModal: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 25,
+  },
+
+  modal: {
+    width: "100%",
+    backgroundColor: "#fde7f1",
+    borderRadius: 25,
+    padding: 25,
+  },
+
+  tituloModal: {
+    color: "#c31868",
+    fontSize: 22,
+    fontWeight: "800",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+
+  input: {
+    height: 52,
+    backgroundColor: "white",
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    color: "#333",
+  },
+
+  cancelarModal: {
+    alignItems: "center",
+    padding: 15,
+  },
+
+  cancelarTexto: {
+    color: "#d91b72",
+    fontWeight: "700",
+  },
+
+  // PREPARAR
+
+  preparar: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 30,
+  },
+
+  iconeGrande: {
+    width: 170,
+    height: 150,
+    borderRadius: 90,
+    backgroundColor: "#f8c8df",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+  },
+
+  ondasCelular: {
+    position: "absolute",
+    color: "#d91b72",
+    fontSize: 28,
+    fontWeight: "900",
+  },
+
+  tituloRosa: {
+    color: "#b30f5c",
+    fontSize: 21,
+    fontWeight: "900",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+
+  textoRosa: {
+    color: "#a03b68",
+    fontSize: 15,
+    lineHeight: 23,
+    textAlign: "center",
+    marginBottom: 30,
+  },
+
+  botaoClaro: {
+    width: "90%",
+    height: 52,
+    borderRadius: 28,
+    backgroundColor: "#f7b6d3",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+
+  textoBotaoClaro: {
+    color: "#c91b69",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+
+  botaoComecar: {
+    width: "90%",
+    height: 52,
+    borderRadius: 28,
+    backgroundColor: "#df2779",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  // DETECTANDO 
+
+  telaDetectando: {
+    flex: 1,
+    backgroundColor: "#d91b72",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  tituloDetectando: {
+    position: "absolute",
+    top: 65,
+    color: "white",
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  circulo1: {
+    width: 310,
+    height: 310,
+    borderRadius: 160,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  circulo2: {
+    width: 225,
+    height: 225,
+    borderRadius: 120,
+    borderWidth: 3,
+    borderColor: "rgba(255,255,255,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  circulo3: {
+    width: 145,
+    height: 145,
+    borderRadius: 80,
+    backgroundColor: "#eb4c93",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  movimento: {
+    color: "white",
+    fontSize: 21,
+    fontWeight: "800",
+    marginTop: 40,
+  },
+
+  sensorAtivo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 15,
+  },
+
+  sensorTexto: {
+    color: "white",
+    marginLeft: 8,
+    fontSize: 14,
+  },
+
+  // RESULTADO 
+
+  resultado: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 25,
+  },
+
+  resultadoCirculo: {
+    width: 190,
+    height: 160,
+    borderRadius: 100,
+    backgroundColor: "#f9c8df",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 25,
+  },
+
+  resultadoEmoji: {
+    fontSize: 100,
+  },
+
+  voceEscolheu: {
+    color: "#b5125f",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  resultadoNome: {
+    color: "#d91b72",
+    fontSize: 32,
+    fontWeight: "900",
+    marginTop: 5,
+    marginBottom: 35,
+  },
+
+  // ERROS
+
+  erroCentro: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 25,
+  },
+
+  iconeErro: {
+    width: 160,
+    height: 150,
+    borderRadius: 90,
+    backgroundColor: "#f8c8df",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+  },
+
+  alerta: {
+    position: "absolute",
+    right: 2,
+    bottom: 2,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#d91b72",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  alertaTexto: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "900",
+  },
+
+  tituloErro: {
+    color: "#b5125f",
+    fontSize: 20,
+    fontWeight: "900",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+
+  textoErro: {
+    color: "#9f3968",
+    fontSize: 15,
+    lineHeight: 23,
+    textAlign: "center",
+    marginBottom: 30,
+  },
+});
