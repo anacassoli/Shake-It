@@ -28,61 +28,68 @@ export default function App() {
   const [novaOpcao, setNovaOpcao] = useState("");
   const [sensorAtivo, setSensorAtivo] = useState(false);
 
-
   // ACELERÔMETRO
-  
-
   useEffect(() => {
     if (!sensorAtivo) return;
 
     let ultimoMovimento = 0;
+    let subscription = null;
 
-    Accelerometer.setUpdateInterval(100);
+    try {
+      Accelerometer.setUpdateInterval(100);
 
-    const subscription = Accelerometer.addListener(({ x, y, z }) => {
-      const movimento = Math.sqrt(x * x + y * y + z * z);
-      const agora = Date.now();
+      subscription = Accelerometer.addListener(({ x, y, z }) => {
+        const movimento = Math.sqrt(x * x + y * y + z * z);
+        const agora = Date.now();
 
-      if (movimento > 1.8 && agora - ultimoMovimento > 1200) {
-        ultimoMovimento = agora;
+        if (movimento > 1.2 && agora - ultimoMovimento > 1200) {
+          ultimoMovimento = agora;
 
-        const sorteado =
-          opcoes[Math.floor(Math.random() * opcoes.length)];
+          const sorteado =
+            opcoes[Math.floor(Math.random() * opcoes.length)];
 
-        setResultado(sorteado);
-        setSensorAtivo(false);
-        setTela("resultado");
+          setResultado(sorteado);
+          setSensorAtivo(false);
+          setTela("resultado");
+        }
+      });
+    } catch (error) {
+      console.error("Erro no acelerômetro:", error);
+      setSensorAtivo(false);
+      setTela("erroSensor");
+    }
+
+    return () => {
+      if (subscription) {
+        subscription.remove();
       }
-    });
-
-    return () => subscription.remove();
+    };
   }, [sensorAtivo, opcoes]);
 
-  
   // INICIAR
-
-
   const iniciarDecisao = async () => {
     if (opcoes.length === 0) {
       setTela("semOpcoes");
       return;
     }
 
-    const disponivel = await Accelerometer.isAvailableAsync();
+    try {
+      const disponivel = await Accelerometer.isAvailableAsync();
 
-    if (!disponivel) {
+      if (!disponivel) {
+        setTela("erroSensor");
+        return;
+      }
+
+      setTela("detectando");
+      setSensorAtivo(true);
+    } catch (error) {
+      console.error("Erro ao verificar sensor:", error);
       setTela("erroSensor");
-      return;
     }
-
-    setTela("detectando");
-    setSensorAtivo(true);
   };
 
-  
   // ADICIONAR OPÇÃO
-
-
   function adicionarOpcao() {
     if (!novaOpcao.trim()) return;
 
@@ -99,17 +106,12 @@ export default function App() {
     setModal(false);
   }
 
-  
   // EXCLUIR
-
-
   function excluirOpcao(id) {
     setOpcoes(opcoes.filter((item) => item.id !== id));
   }
 
   // TELA 1 - INÍCIO
-  
-
   if (tela === "inicio") {
     return (
       <View style={styles.tela}>
@@ -120,7 +122,6 @@ export default function App() {
         <View style={styles.bolhaBottom} />
 
         <View style={styles.inicioCentro}>
-
           <View style={styles.celularInicio}>
             <Ionicons
               name="phone-portrait-outline"
@@ -140,9 +141,7 @@ export default function App() {
           <Text style={styles.logoShake}>Shake</Text>
           <Text style={styles.logoIt}>It</Text>
 
-          <Text style={styles.fraseLogo}>
-            Balançou, escolheu!
-          </Text>
+          <Text style={styles.fraseLogo}>Balançou, escolheu!</Text>
 
           <Text style={styles.descricaoInicio}>
             Cadastre suas opções e deixe{"\n"}
@@ -159,9 +158,7 @@ export default function App() {
     );
   }
 
-
   // TELA 2 - OPÇÕES
-
   if (tela === "opcoes") {
     return (
       <View style={styles.tela}>
@@ -176,9 +173,7 @@ export default function App() {
             />
           </Pressable>
 
-          <Text style={styles.headerTitulo}>
-            Minhas Opções
-          </Text>
+          <Text style={styles.headerTitulo}>Minhas Opções</Text>
 
           <Pressable onPress={() => setModal(true)}>
             <Ionicons
@@ -195,20 +190,13 @@ export default function App() {
           contentContainerStyle={styles.lista}
           renderItem={({ item }) => (
             <View style={styles.cardOpcao}>
-
               <View style={styles.iconeOpcao}>
-                <Text style={styles.emoji}>
-                  {item.emoji}
-                </Text>
+                <Text style={styles.emoji}>{item.emoji}</Text>
               </View>
 
-              <Text style={styles.nomeOpcao}>
-                {item.nome}
-              </Text>
+              <Text style={styles.nomeOpcao}>{item.nome}</Text>
 
-              <Pressable
-                onPress={() => excluirOpcao(item.id)}
-              >
+              <Pressable onPress={() => excluirOpcao(item.id)}>
                 <Ionicons
                   name="trash-outline"
                   size={23}
@@ -232,17 +220,10 @@ export default function App() {
           />
         </View>
 
-        <Modal
-          visible={modal}
-          transparent
-          animationType="fade"
-        >
+        <Modal visible={modal} transparent animationType="fade">
           <View style={styles.fundoModal}>
             <View style={styles.modal}>
-
-              <Text style={styles.tituloModal}>
-                Nova opção
-              </Text>
+              <Text style={styles.tituloModal}>Nova opção</Text>
 
               <TextInput
                 value={novaOpcao}
@@ -252,20 +233,14 @@ export default function App() {
                 style={styles.input}
               />
 
-              <Botao
-                texto="Adicionar"
-                onPress={adicionarOpcao}
-              />
+              <Botao texto="Adicionar" onPress={adicionarOpcao} />
 
               <Pressable
                 onPress={() => setModal(false)}
                 style={styles.cancelarModal}
               >
-                <Text style={styles.cancelarTexto}>
-                  Cancelar
-                </Text>
+                <Text style={styles.cancelarTexto}>Cancelar</Text>
               </Pressable>
-
             </View>
           </View>
         </Modal>
@@ -273,9 +248,7 @@ export default function App() {
     );
   }
 
-  
-  // TELA 3 - PRONTO PARA BALANÇ
-
+  // TELA 3 - PRONTO PARA BALANÇAR
   if (tela === "preparar") {
     return (
       <View style={styles.tela}>
@@ -285,7 +258,6 @@ export default function App() {
         />
 
         <View style={styles.preparar}>
-
           <View style={styles.iconeGrande}>
             <Ionicons
               name="phone-portrait-outline"
@@ -293,14 +265,10 @@ export default function App() {
               color="#d91b72"
             />
 
-            <Text style={styles.ondasCelular}>
-              ))  ((
-            </Text>
+            <Text style={styles.ondasCelular}>))  ((</Text>
           </View>
 
-          <Text style={styles.tituloRosa}>
-            Pronto para balançar!
-          </Text>
+          <Text style={styles.tituloRosa}>Pronto para balançar!</Text>
 
           <Text style={styles.textoRosa}>
             Segure o celular com firmeza{"\n"}
@@ -312,36 +280,25 @@ export default function App() {
             style={styles.botaoClaro}
             onPress={() => setTela("opcoes")}
           >
-            <Text style={styles.textoBotaoClaro}>
-              Cancelar
-            </Text>
+            <Text style={styles.textoBotaoClaro}>Cancelar</Text>
           </Pressable>
 
           <Pressable
             style={styles.botaoComecar}
             onPress={iniciarDecisao}
           >
-            <Text style={styles.textoBotao}>
-              Começar
-            </Text>
+            <Text style={styles.textoBotao}>Começar</Text>
           </Pressable>
-
         </View>
       </View>
     );
   }
 
-  
   // TELA 4 - DETECTANDO
-  
-
   if (tela === "detectando") {
     return (
       <View style={styles.telaDetectando}>
-
-        <Text style={styles.tituloDetectando}>
-          Shake It
-        </Text>
+        <Text style={styles.tituloDetectando}>Shake It</Text>
 
         <View style={styles.circulo1}>
           <View style={styles.circulo2}>
@@ -355,9 +312,7 @@ export default function App() {
           </View>
         </View>
 
-        <Text style={styles.movimento}>
-          Detectando movimento...
-        </Text>
+        <Text style={styles.movimento}>Detectando movimento...</Text>
 
         <View style={styles.sensorAtivo}>
           <Ionicons
@@ -366,68 +321,61 @@ export default function App() {
             color="white"
           />
 
-          <Text style={styles.sensorTexto}>
-            Acelerômetro ativo
-          </Text>
+          <Text style={styles.sensorTexto}>Acelerômetro ativo</Text>
         </View>
 
+        <Pressable
+          style={[styles.botaoClaro, { marginTop: 40, width: "70%" }]}
+          onPress={() => {
+            setSensorAtivo(false);
+            setTela("opcoes");
+          }}
+        >
+          <Text style={styles.textoBotaoClaro}>Cancelar</Text>
+        </Pressable>
       </View>
     );
   }
 
-  
-  // TELA 5 - RESULTADO
-  
-
-  if (tela === "resultado") {
+  // TELA 5 - RESULTADO (protegida contra null)
+  if (tela === "resultado" && resultado) {
     return (
       <View style={styles.tela}>
-
         <Header
           titulo="Shake It"
           voltar={() => setTela("opcoes")}
         />
 
         <View style={styles.resultado}>
-
           <View style={styles.resultadoCirculo}>
             <Text style={styles.resultadoEmoji}>
-              {resultado?.emoji}
+              {resultado.emoji}
             </Text>
           </View>
 
-          <Text style={styles.voceEscolheu}>
-            Você escolheu:
-          </Text>
+          <Text style={styles.voceEscolheu}>Você escolheu:</Text>
 
-          <Text style={styles.resultadoNome}>
-            {resultado?.nome}
-          </Text>
+          <Text style={styles.resultadoNome}>{resultado.nome}</Text>
 
           <Botao
             texto="↻   Nova Decisão"
             onPress={() => setTela("opcoes")}
           />
-
         </View>
       </View>
     );
   }
 
   // TELA 7 - ERRO SENSOR
-
-
   if (tela === "erroSensor") {
     return (
       <View style={styles.tela}>
-
         <Header
           titulo="Shake It"
           voltar={() => setTela("opcoes")}
         />
 
         <View style={styles.erroCentro}>
-
           <View style={styles.iconeErro}>
             <Ionicons
               name="phone-portrait-outline"
@@ -436,15 +384,11 @@ export default function App() {
             />
 
             <View style={styles.alerta}>
-              <Text style={styles.alertaTexto}>
-                !
-              </Text>
+              <Text style={styles.alertaTexto}>!</Text>
             </View>
           </View>
 
-          <Text style={styles.tituloErro}>
-            Sensor indisponível
-          </Text>
+          <Text style={styles.tituloErro}>Sensor indisponível</Text>
 
           <Text style={styles.textoErro}>
             Não foi possível acessar o{"\n"}
@@ -457,27 +401,21 @@ export default function App() {
             texto="Voltar"
             onPress={() => setTela("opcoes")}
           />
-
         </View>
       </View>
     );
   }
 
-
   // TELA 8 - SEM OPÇÕES
-
-
   if (tela === "semOpcoes") {
     return (
       <View style={styles.tela}>
-
         <Header
           titulo="Shake It"
           voltar={() => setTela("opcoes")}
         />
 
         <View style={styles.erroCentro}>
-
           <View style={styles.iconeErro}>
             <Ionicons
               name="list-outline"
@@ -486,9 +424,7 @@ export default function App() {
             />
 
             <View style={styles.alerta}>
-              <Text style={styles.alertaTexto}>
-                !
-              </Text>
+              <Text style={styles.alertaTexto}>!</Text>
             </View>
           </View>
 
@@ -505,25 +441,34 @@ export default function App() {
             texto="Voltar"
             onPress={() => setTela("opcoes")}
           />
-
         </View>
       </View>
     );
   }
 
-  return null;
+  // FALLBACK - nunca deixa a tela branca
+  return (
+    <View style={styles.tela}>
+      <Header
+        titulo="Shake It"
+        voltar={() => setTela("inicio")}
+      />
+      <View style={styles.erroCentro}>
+        <Text style={styles.tituloErro}>Algo deu errado</Text>
+        <Botao
+          texto="Voltar ao início"
+          onPress={() => setTela("inicio")}
+        />
+      </View>
+    </View>
+  );
 }
 
 // COMPONENTES
 function Botao({ texto, onPress }) {
   return (
-    <Pressable
-      style={styles.botao}
-      onPress={onPress}
-    >
-      <Text style={styles.textoBotao}>
-        {texto}
-      </Text>
+    <Pressable style={styles.botao} onPress={onPress}>
+      <Text style={styles.textoBotao}>{texto}</Text>
     </Pressable>
   );
 }
@@ -531,7 +476,6 @@ function Botao({ texto, onPress }) {
 function Header({ titulo, voltar }) {
   return (
     <View style={styles.header}>
-
       <Pressable onPress={voltar}>
         <Ionicons
           name="chevron-back"
@@ -540,28 +484,21 @@ function Header({ titulo, voltar }) {
         />
       </Pressable>
 
-      <Text style={styles.headerTitulo}>
-        {titulo}
-      </Text>
+      <Text style={styles.headerTitulo}>{titulo}</Text>
 
       <View style={{ width: 30 }} />
-
     </View>
   );
 }
 
 // ESTILOS
-
-
 const styles = StyleSheet.create({
-
   tela: {
     flex: 1,
     backgroundColor: "#fde7f1",
   },
 
   // INÍCIO
-
   bolhaTop: {
     position: "absolute",
     width: 260,
@@ -654,8 +591,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
 
-  // HEADER 
-
+  // HEADER
   header: {
     height: 90,
     paddingTop: 28,
@@ -673,7 +609,6 @@ const styles = StyleSheet.create({
   },
 
   // OPÇÕES
-
   lista: {
     padding: 15,
     paddingBottom: 120,
@@ -717,8 +652,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
 
-  // BOTÃO 
-
+  // BOTÃO
   botao: {
     width: "100%",
     height: 52,
@@ -735,7 +669,6 @@ const styles = StyleSheet.create({
   },
 
   // MODAL
-
   fundoModal: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.35)",
@@ -779,7 +712,6 @@ const styles = StyleSheet.create({
   },
 
   // PREPARAR
-
   preparar: {
     flex: 1,
     alignItems: "center",
@@ -845,8 +777,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // DETECTANDO 
-
+  // DETECTANDO
   telaDetectando: {
     flex: 1,
     backgroundColor: "#d91b72",
@@ -910,8 +841,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // RESULTADO 
-
+  // RESULTADO
   resultado: {
     flex: 1,
     alignItems: "center",
@@ -948,7 +878,6 @@ const styles = StyleSheet.create({
   },
 
   // ERROS
-
   erroCentro: {
     flex: 1,
     alignItems: "center",
